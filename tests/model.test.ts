@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatTime, validSection, sanitize } from '../src/lib/study/model.js';
+import { formatTime, validSection, sanitize } from '../src/lib/study/model.ts';
 
 test('time formatting carries rounded centiseconds into minutes', () => {
   assert.equal(formatTime(59.999), '01:00.00');
@@ -16,7 +16,7 @@ test('sections must have finite, ordered bounds inside the recording', () => {
     [1, 4, 3],
     [1, Infinity, 3]
   ]) {
-    assert.equal(validSection(...bounds), false);
+    assert.equal(validSection(bounds[0], bounds[1], bounds[2]), false);
   }
 });
 

@@ -1,39 +1,39 @@
 # Loop Study
 
 > [!WARNING]
-> This project is fully AI generated so expect some technical slop 👀 
+> This project is fully AI generated so expect some technical slop 👀
 
 A SvelteKit 3 / Svelte 5 project for studying Balisong tricks.
 
 ## Run locally
 
-Use Node.js 22.17+ (Node 22 LTS is used in CI).
+Use Node.js 22.17+ and pnpm 12.4.1 (pinned in `package.json`). Node 22 is used in CI. Run `corepack enable` once if pnpm is not on your PATH.
 
 ```sh
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 ```sh
-npm run check       # Svelte diagnostics
-npm test            # Model and IndexedDB persistence tests
-npm run build       # Prerender into build/
-npm run preview    # Preview the production build
+pnpm check      # Strict TypeScript and Svelte diagnostics
+pnpm test       # Model and IndexedDB persistence tests
+pnpm build      # Prerender into build/
+pnpm preview    # Preview the production build
 ```
 
 Browser tests require Chromium once:
 
 ```sh
-npx playwright install chromium
-npm run build
-npm run test:e2e
+pnpm exec playwright install chromium
+pnpm build
+pnpm test:e2e
 ```
 
 To verify a GitHub Pages project subpath locally, use the same base for both commands:
 
 ```sh
-BASE_PATH=/bali-driller npm run build
-BASE_PATH=/bali-driller npm run test:e2e
+BASE_PATH=/bali-driller pnpm build
+BASE_PATH=/bali-driller pnpm test:e2e
 ```
 
 ## GitHub Pages
@@ -41,6 +41,8 @@ BASE_PATH=/bali-driller npm run test:e2e
 1. Create a GitHub repository and push this folder on `main`.
 2. In **Settings → Pages → Build and deployment**, choose **GitHub Actions**.
 3. The included `.github/workflows/deploy.yml` checks, tests, builds and deploys on pushes to `main` or manual dispatch.
+
+Both jobs use `ubuntu-24.04`. The workflow uses Node 24 action runtimes (including the nested artifact uploader); the application Node version comes from `.nvmrc`. pnpm is installed before `setup-node` restores its lockfile-keyed cache.
 
 The workflow gets `BASE_PATH` from GitHub's Pages configuration, supporting project repositories, user/organization sites and custom domains. For a manual build, set `BASE_PATH=/your-repository` for a project site, or omit it for a domain root. Publish the contents of `build/`. `static/.nojekyll` is included.
 
@@ -69,9 +71,9 @@ Codec support depends on the browser. H.264 MP4 is a practical compatibility cho
 ```text
 src/routes/                 SSG route and global layout
 src/lib/components/         App shell, library, video player, playback, dialogs, icons
-src/lib/study/model.js       Time formatting, validation and metadata normalization
-src/lib/study/storage.js     IndexedDB transactions, upgrade and blob URL lifecycle
-src/lib/study/player.svelte.js  Per-instance reactive playback and library controller
+src/lib/study/model.ts       Time formatting, validation and metadata normalization
+src/lib/study/storage.ts     IndexedDB transactions, upgrade and blob URL lifecycle
+src/lib/study/player.svelte.ts  Per-instance reactive playback and library controller
 src/app.css                 Original XP visual styling and responsive adjustments
 static/media/demo.mp4       Extracted demo recording (~13 MB)
 tests/                      Model/storage tests and Playwright browser scenarios

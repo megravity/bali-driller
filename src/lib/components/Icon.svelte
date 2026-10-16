@@ -1,5 +1,19 @@
-<script>
-  let { name } = $props();
+<script lang="ts">
+  let {
+    name
+  }: {
+    name:
+      | 'window-expand'
+      | 'toolbar-import'
+      | 'mirror'
+      | 'mute'
+      | 'fullscreen'
+      | 'play'
+      | 'restart'
+      | 'toggle-loop'
+      | 'save-section'
+      | 'app';
+  } = $props();
 </script>
 
 {#if name === 'window-expand'}

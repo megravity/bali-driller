@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Study from '#lib/components/Study.svelte';
 </script>
 

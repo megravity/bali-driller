@@ -1,8 +1,12 @@
-<script>
-  import { formatTime } from '#lib/study/model.js';
-  let { study } = $props();
+<script lang="ts">
+  import type { Study } from '#lib/study/types.ts';
+  import { formatTime } from '#lib/study/model.ts';
+  let { study }: { study: Study } = $props();
   const s = $derived(study.state);
-  let editDialog, sectionDialog, confirmDialog, helpDialog;
+  let editDialog: HTMLDialogElement,
+    sectionDialog: HTMLDialogElement,
+    confirmDialog: HTMLDialogElement,
+    helpDialog: HTMLDialogElement;
   let title = $state(''),
     creator = $state(''),
     tags = $state(''),

@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
+  import type { Study } from '#lib/study/types.ts';
   import Icon from './Icon.svelte';
-  import { formatTime, speeds } from '#lib/study/model.js';
-  let { study, onsave } = $props();
+  import { formatTime, speeds } from '#lib/study/model.ts';
+  let { study, onsave }: { study: Study; onsave: () => void } = $props();
   const s = $derived(study.state);
   const left = $derived((s.a / (s.duration || 1)) * 100);
   const right = $derived((s.b / (s.duration || 1)) * 100);

@@ -1,6 +1,17 @@
-<script>
+<script lang="ts">
+  import type { Study } from '#lib/study/types.ts';
   import Icon from './Icon.svelte';
-  let { study, onimport, video = $bindable(), stage = $bindable() } = $props();
+  let {
+    study,
+    onimport,
+    video = $bindable(),
+    stage = $bindable()
+  }: {
+    study: Study;
+    onimport: () => void;
+    video?: HTMLVideoElement;
+    stage?: HTMLDivElement;
+  } = $props();
   const s = $derived(study.state);
 </script>
 
@@ -100,7 +111,7 @@
         id="fullscreen"
         title="Fullscreen viewer (F)"
         aria-label="Fullscreen viewer"
-        onclick={() => study.fullscreen(stage)}
+        onclick={() => stage && study.fullscreen(stage)}
         disabled={!s.ready}
         ><Icon name="fullscreen" /><span>Full Screen</span></button
       >

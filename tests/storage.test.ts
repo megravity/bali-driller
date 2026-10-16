@@ -1,12 +1,12 @@
 import 'fake-indexeddb/auto';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { openLibrary } from '../src/lib/study/storage.js';
+import { openLibrary } from '../src/lib/study/storage.ts';
 
 function deleteDatabase() {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase('loop-study-v1');
-    request.onsuccess = resolve;
+    request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
 }
@@ -52,7 +52,7 @@ test('upgrades the original v1 store without replacing its metadata', async () =
   const request = indexedDB.open('loop-study-v1', 1);
   request.onupgradeneeded = () =>
     request.result.createObjectStore('clips', { keyPath: 'id' });
-  const db = await new Promise((resolve) => {
+  const db = await new Promise<IDBDatabase>((resolve) => {
     request.onsuccess = () => resolve(request.result);
   });
   const tx = db.transaction('clips', 'readwrite');
@@ -63,8 +63,8 @@ test('upgrades the original v1 store without replacing its metadata', async () =
     source: 'data:video/mp4;base64,old',
     sections: []
   });
-  await new Promise((resolve) => {
-    tx.oncomplete = resolve;
+  await new Promise<void>((resolve) => {
+    tx.oncomplete = () => resolve();
   });
   db.close();
   const library = await openLibrary('/new-base/media/demo.mp4');
@@ -80,11 +80,9 @@ test('an aborted batch leaves no partially imported videos', async () => {
   const originalPut = IDBObjectStore.prototype.put;
   let imported = 0;
   IDBObjectStore.prototype.put = function (record, ...args) {
-    if (record.blob && ++imported === 2) {
-      this.transaction.abort();
-      return;
-    }
-    return originalPut.call(this, record, ...args);
+    const request = originalPut.call(this, record, ...args);
+    if (record.blob && ++imported === 2) this.transaction.abort();
+    return request;
   };
   try {
     await assert.rejects(
@@ -105,7 +103,7 @@ test('a blocked database upgrade reports an actionable error', async () => {
   const request = indexedDB.open('loop-study-v1', 1);
   request.onupgradeneeded = () =>
     request.result.createObjectStore('clips', { keyPath: 'id' });
-  const oldTab = await new Promise((resolve) => {
+  const oldTab = await new Promise<IDBDatabase>((resolve) => {
     request.onsuccess = () => resolve(request.result);
   });
   await assert.rejects(

@@ -1,6 +1,7 @@
-<script>
-  import { formatTime } from '#lib/study/model.js';
-  let { study, onimport } = $props();
+<script lang="ts">
+  import type { Study } from '#lib/study/types.ts';
+  import { formatTime } from '#lib/study/model.ts';
+  let { study, onimport }: { study: Study; onimport: () => void } = $props();
   const s = $derived(study.state);
   const matching = $derived(
     s.clips.filter((clip) =>

@@ -1,9 +1,16 @@
-import { clamp, speeds, validSection } from './model.js';
-import { openLibrary, readLastClip, rememberClip } from './storage.js';
+import type {
+  Clip,
+  ClipDetails,
+  SavedSection,
+  StudyState,
+  VideoPointerEvent
+} from './types.ts';
+import { clamp, speeds, validSection } from './model.ts';
+import { openLibrary, readLastClip, rememberClip } from './storage.ts';
 
 // One controller per mounted app. DOM elements and database handles stay outside reactive state.
 export function createStudy() {
-  const state = $state({
+  const state = $state<StudyState>({
     clips: [],
     current: null,
     query: '',
@@ -29,28 +36,38 @@ export function createStudy() {
     storageError: '',
     expanded: false
   });
-  let video,
-    store,
-    frame,
-    toastTimer,
-    drag,
-    alive = true,
+  let video: HTMLVideoElement;
+  let store: Awaited<ReturnType<typeof openLibrary>> | undefined;
+  let frame = 0;
+  let toastTimer: ReturnType<typeof setTimeout> | undefined;
+  let drag: {
+    x: number;
+    y: number;
+    px: number;
+    py: number;
+    moved: boolean;
+  } | null = null;
+  let alive = true,
     serial = 0;
   let scrubbing = false,
     resumeAfterScrub = false;
   let saveChain = Promise.resolve();
   let pendingSaves = 0;
 
-  function toast(message) {
+  function toast(message: string) {
     state.message = message;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       state.message = '';
     }, 5000);
   }
-  function report(error) {
+  function report(error: unknown) {
     console.error(error);
-    toast(error.message || 'Something went wrong. Please try again.');
+    toast(
+      error instanceof Error
+        ? error.message
+        : 'Something went wrong. Please try again.'
+    );
   }
   function persist() {
     if (!state.current || !store) return;
@@ -58,12 +75,12 @@ export function createStudy() {
     pendingSaves++;
     state.saveStatus = 'Saving…';
     saveChain = saveChain
-      .then(() => store.save(snapshot))
+      .then(() => store!.save(snapshot))
       .then(() => {
         state.storageError = '';
       })
       .catch((error) => {
-        state.storageError = `Could not save changes: ${error.message}. Check available browser storage and try again.`;
+        state.storageError = `Could not save changes: ${error instanceof Error ? error.message : String(error)}. Check available browser storage and try again.`;
         report(new Error(state.storageError));
       })
       .finally(() => {
@@ -80,7 +97,7 @@ export function createStudy() {
     state.zoom = 1;
     state.panX = state.panY = 0;
   }
-  function openClip(clip) {
+  function openClip(clip: Clip | null) {
     serial++;
     video.pause();
     state.ready = false;
@@ -120,6 +137,7 @@ export function createStudy() {
       canvas.width = 112;
       canvas.height = 160;
       const ctx = canvas.getContext('2d');
+      if (!ctx) return;
       ctx.fillStyle = '#181b1a';
       ctx.fillRect(0, 0, 112, 160);
       const ratio = Math.min(112 / video.videoWidth, 160 / video.videoHeight);
@@ -138,7 +156,7 @@ export function createStudy() {
       /* Thumbnails are optional. */
     }
   }
-  function seek(time) {
+  function seek(time: number) {
     if (state.ready) {
       video.currentTime = clamp(time, 0, state.duration);
       state.time = video.currentTime;
@@ -155,7 +173,8 @@ export function createStudy() {
     try {
       await video.play();
     } catch (error) {
-      if (error.name !== 'AbortError') report(error);
+      if (!(error instanceof Error) || error.name !== 'AbortError')
+        report(error);
     }
   }
   function togglePlay() {
@@ -168,12 +187,12 @@ export function createStudy() {
       play();
     }
   }
-  function setSpeed(speed) {
+  function setSpeed(speed: number) {
     if (!state.current || !speeds.includes(speed)) return;
     state.current.speed = video.playbackRate = speed;
     persist();
   }
-  function changeSpeed(delta) {
+  function changeSpeed(delta: number) {
     setSpeed(
       speeds[
         clamp(
@@ -184,13 +203,13 @@ export function createStudy() {
       ]
     );
   }
-  function step(delta) {
-    if (state.ready) {
+  function step(delta: number) {
+    if (state.ready && state.current) {
       video.pause();
       seek(video.currentTime + delta / state.current.fps);
     }
   }
-  function setPoint(which) {
+  function setPoint(which: 'a' | 'b') {
     if (!state.ready) return;
     const time = clamp(video.currentTime, 0, state.duration);
     if (
@@ -238,7 +257,7 @@ export function createStudy() {
     resumeAfterScrub = !video.paused;
     video.pause();
   }
-  function scrub(time) {
+  function scrub(time: number) {
     if (!scrubbing && state.looping && (time < state.a || time >= state.b))
       state.looping = false;
     seek(time);
@@ -261,9 +280,10 @@ export function createStudy() {
     state.b = state.duration;
     state.selectedSection = null;
   }
-  function saveSection(name) {
+  function saveSection(name: string) {
     if (
       !state.ready ||
+      !state.current ||
       !name.trim() ||
       !validSection(state.a, state.b, state.duration)
     )
@@ -285,7 +305,7 @@ export function createStudy() {
     persist();
     return true;
   }
-  function selectSection(section) {
+  function selectSection(section: SavedSection) {
     if (!state.ready) return;
     state.a = section.a;
     state.b = section.b;
@@ -295,14 +315,15 @@ export function createStudy() {
     seek(section.a);
     play();
   }
-  function deleteSection(id) {
+  function deleteSection(id: string) {
+    if (!state.current) return;
     state.current.sections = state.current.sections.filter(
       (section) => section.id !== id
     );
     if (state.selectedSection === id) state.selectedSection = null;
     persist();
   }
-  function editClip({ title, creator, tags }) {
+  function editClip({ title, creator, tags }: ClipDetails) {
     if (!state.current || !title.trim()) return false;
     state.current.title = title.trim().slice(0, 100);
     state.current.creator = creator.trim().slice(0, 80);
@@ -315,7 +336,7 @@ export function createStudy() {
     return true;
   }
   async function removeClip() {
-    if (!state.current) return;
+    if (!state.current || !store) return;
     const id = state.current.id;
     try {
       await saveChain;
@@ -328,15 +349,15 @@ export function createStudy() {
       report(error);
     }
   }
-  async function importFiles(files) {
-    if (!store || state.importing) return;
+  async function importFiles(files: Iterable<File> | null) {
+    if (!store || !files || state.importing) return;
     state.importing = true;
     try {
       const added = await store.importFiles(files);
       if (!alive) return;
       if (added.length) {
         state.clips.push(...added);
-        openClip(state.clips.at(-added.length));
+        openClip(state.clips.at(-added.length) ?? null);
         toast(
           `${added.length} recording${added.length === 1 ? '' : 's'} saved in this browser.`
         );
@@ -345,7 +366,7 @@ export function createStudy() {
     } catch (error) {
       report(
         new Error(
-          `Could not import recordings: ${error.message}. The batch was not saved.`
+          `Could not import recordings: ${error instanceof Error ? error.message : String(error)}. The batch was not saved.`
         )
       );
     } finally {
@@ -362,17 +383,17 @@ export function createStudy() {
     video.muted = !video.muted;
     state.muted = video.muted;
   }
-  function setFps(fps) {
+  function setFps(fps: string | number) {
     if (state.current) {
       state.current.fps = Number(fps);
       persist();
     }
   }
-  function changeZoom(delta) {
+  function changeZoom(delta: number) {
     state.zoom = clamp(state.zoom + delta, 1, 4);
     if (state.zoom === 1) state.panX = state.panY = 0;
   }
-  function pointerDown(event) {
+  function pointerDown(event: VideoPointerEvent) {
     if (event.button !== 0) return;
     drag = {
       x: event.clientX,
@@ -383,7 +404,7 @@ export function createStudy() {
     };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
-  function pointerMove(event) {
+  function pointerMove(event: VideoPointerEvent) {
     if (!drag) return;
     if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 4)
       drag.moved = true;
@@ -397,7 +418,7 @@ export function createStudy() {
     if (drag && !drag.moved) togglePlay();
     drag = null;
   }
-  async function fullscreen(element) {
+  async function fullscreen(element: HTMLElement) {
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await element.requestFullscreen();
@@ -405,12 +426,17 @@ export function createStudy() {
       toast('Fullscreen is unavailable here.');
     }
   }
-  function shortcut(event, showHelp, stage) {
+  function shortcut(
+    event: KeyboardEvent,
+    showHelp: () => void,
+    stage: HTMLElement
+  ) {
+    const target = event.target instanceof Element ? event.target : null;
     if (
       event.ctrlKey ||
       event.metaKey ||
       event.altKey ||
-      event.target.closest('input,textarea,select,[contenteditable]') ||
+      target?.closest('input,textarea,select,[contenteditable]') ||
       document.querySelector('dialog[open]')
     )
       return;
@@ -421,9 +447,9 @@ export function createStudy() {
       return;
     }
     // Preserve the native Space/Enter activation of a focused button.
-    if (event.target.closest('button') && key === ' ') return;
+    if (target?.closest('button') && key === ' ') return;
     if (!state.ready) return;
-    const actions = {
+    const actions: Record<string, () => void> = {
       ' ': togglePlay,
       r: restart,
       a: () => setPoint('a'),
@@ -445,7 +471,7 @@ export function createStudy() {
       actions[key]();
     }
   }
-  async function initialize(element, demoSource) {
+  async function initialize(element: HTMLVideoElement, demoSource: string) {
     video = element;
     const tick = () => {
       checkLoop();
@@ -468,7 +494,7 @@ export function createStudy() {
       );
       state.saveStatus = 'Saved in this browser';
     } catch (error) {
-      state.storageError = `The local library could not open: ${error.message}. Allow browser storage, then reload.`;
+      state.storageError = `The local library could not open: ${error instanceof Error ? error.message : String(error)}. Allow browser storage, then reload.`;
       state.saveStatus = 'Local library unavailable';
       report(new Error(state.storageError));
     } finally {

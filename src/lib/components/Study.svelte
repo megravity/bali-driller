@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import { asset } from '$app/paths';
-  import { createStudy } from '#lib/study/player.svelte.js';
+  import { createStudy } from '#lib/study/player.svelte.ts';
   import Icon from './Icon.svelte';
   import Library from './Library.svelte';
   import VideoPlayer from './VideoPlayer.svelte';
@@ -10,25 +10,32 @@
 
   const study = createStudy();
   const s = study.state;
-  let video = $state(),
-    stage = $state(),
-    shell,
-    fileInput,
-    dialogs,
-    libraryToggle;
+  let video = $state<HTMLVideoElement>(),
+    stage = $state<HTMLDivElement>();
+  let shell: HTMLDivElement,
+    fileInput: HTMLInputElement,
+    libraryToggle: HTMLButtonElement;
+  let dialogs: {
+    showHelp(): void;
+    showProperties(): void;
+    showSection(): void;
+  };
   let dropVisible = $state(false);
   let dragDepth = 0;
   function chooseFiles() {
     fileInput.click();
   }
-  function outsideLibrary(event) {
+  function outsideLibrary(event: PointerEvent) {
     if (
       window.innerWidth <= 1100 &&
-      !event.target.closest('#library-panel,#library-toggle')
+      !(
+        event.target instanceof Element &&
+        event.target.closest('#library-panel,#library-toggle')
+      )
     )
       s.libraryVisible = false;
   }
-  function keydown(event) {
+  function keydown(event: KeyboardEvent) {
     if (
       event.key === 'Escape' &&
       !document.querySelector('dialog[open]') &&
@@ -37,16 +44,16 @@
       s.libraryVisible = false;
       libraryToggle.focus();
     }
-    study.shortcut(event, () => dialogs.showHelp(), stage);
+    if (stage) study.shortcut(event, () => dialogs.showHelp(), stage);
   }
-  function dragenter(event) {
-    if (!event.dataTransfer.types.includes('Files')) return;
+  function dragenter(event: DragEvent) {
+    if (!event.dataTransfer?.types.includes('Files')) return;
     event.preventDefault();
     dragDepth++;
     dropVisible = true;
   }
-  function dragover(event) {
-    if (event.dataTransfer.types.includes('Files')) event.preventDefault();
+  function dragover(event: DragEvent) {
+    if (event.dataTransfer?.types.includes('Files')) event.preventDefault();
   }
   function dragleave() {
     if (--dragDepth <= 0) {
@@ -54,8 +61,8 @@
       dropVisible = false;
     }
   }
-  function drop(event) {
-    if (!event.dataTransfer.types.includes('Files')) return;
+  function drop(event: DragEvent) {
+    if (!event.dataTransfer?.types.includes('Files')) return;
     event.preventDefault();
     dragDepth = 0;
     dropVisible = false;
@@ -64,11 +71,12 @@
   onMount(() => {
     const compact = window.matchMedia('(max-width: 1100px)');
     s.libraryVisible = !compact.matches;
-    const resize = (event) => {
+    const resize = (event: MediaQueryListEvent) => {
       s.libraryVisible = !event.matches;
     };
     compact.addEventListener('change', resize);
-    study.initialize(video, asset('/media/demo.mp4'));
+    if (!video) return;
+    study.initialize(video, asset('media/demo.mp4'));
     return () => {
       compact.removeEventListener('change', resize);
       study.destroy();

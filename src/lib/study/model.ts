@@ -1,13 +1,14 @@
+import type { ClipInput, ClipMetadata, SavedSection } from './types.ts';
 export const speeds = [0.1, 0.25, 0.5, 0.75, 1];
-export const clamp = (value, min, max) =>
+export const clamp = (value: unknown, min: number, max: number) =>
   Math.min(max, Math.max(min, Number(value) || 0));
 
-export function formatTime(value) {
+export function formatTime(value: unknown) {
   const cs = Math.round(Math.max(0, Number(value) || 0) * 100);
   return `${String(Math.floor(cs / 6000)).padStart(2, '0')}:${String(Math.floor(cs / 100) % 60).padStart(2, '0')}.${String(cs % 100).padStart(2, '0')}`;
 }
 
-export function validSection(a, b, duration) {
+export function validSection(a: number, b: number, duration: number) {
   return (
     Number.isFinite(a) &&
     Number.isFinite(b) &&
@@ -17,7 +18,7 @@ export function validSection(a, b, duration) {
   );
 }
 
-export function sanitize(record) {
+export function sanitize(record: ClipInput): ClipMetadata {
   return {
     id: String(record.id),
     title: String(record.title || 'Untitled recording').slice(0, 100),
@@ -39,8 +40,11 @@ export function sanitize(record) {
         : '',
     sections: (Array.isArray(record.sections) ? record.sections : [])
       .slice(0, 500)
-      .filter((section) =>
-        validSection(section.a, section.b, Number(record.duration) || 86400)
+      .filter(
+        (section): section is SavedSection =>
+          typeof section === 'object' &&
+          section !== null &&
+          validSection(section.a, section.b, Number(record.duration) || 86400)
       )
       .map((section) => ({
         id: String(section.id).slice(0, 80),

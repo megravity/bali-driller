@@ -1,6 +1,12 @@
-import { test, expect } from '@playwright/test';
+declare global {
+  interface Window {
+    restoreStorage: () => void;
+  }
+}
 
-async function ready(page) {
+import { test, expect, type Page } from '@playwright/test';
+
+async function ready(page: Page) {
   await page.goto('./');
   await expect(
     page.getByRole('button', { name: 'Play', exact: true })
@@ -10,7 +16,7 @@ async function ready(page) {
 test('playback, saved sections and properties persist after reloading', async ({
   page
 }) => {
-  const errors = [];
+  const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await ready(page);
   await page.getByRole('button', { name: '50%', exact: true }).click();
@@ -70,16 +76,18 @@ test('playback, saved sections and properties persist after reloading', async ({
   );
   await page.waitForTimeout(4500);
   expect(
-    await page.locator('video').evaluate((video) => video.currentTime)
+    await page
+      .locator('video')
+      .evaluate((video: HTMLVideoElement) => video.currentTime)
   ).toBeLessThanOrEqual(3.1);
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   const before = await page
     .locator('video')
-    .evaluate((video) => video.currentTime);
+    .evaluate((video: HTMLVideoElement) => video.currentTime);
   await page.getByRole('button', { name: 'Frame +', exact: true }).click();
   const after = await page
     .locator('video')
-    .evaluate((video) => video.currentTime);
+    .evaluate((video: HTMLVideoElement) => video.currentTime);
   expect(after - before).toBeCloseTo(1 / 30, 2);
   expect(errors).toEqual([]);
 });
