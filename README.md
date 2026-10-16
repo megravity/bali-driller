@@ -1,6 +1,9 @@
 # Loop Study
 
-A SvelteKit 3 / Svelte 5 extraction of `Loop-Study2.html`, preserving the original Windows XP appearance and video practice workflow. Fully prerendered with `adapter-static`; the deployed site requires no server or account.
+> [!WARNING]
+> This project is fully AI generated so expect some technical slop 👀 
+
+A SvelteKit 3 / Svelte 5 project for studying Balisong tricks.
 
 ## Run locally
 
