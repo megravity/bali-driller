@@ -4,3 +4,8 @@ build
 pnpm-lock.yaml
 playwright-report
 test-results
+
+poc/importer/worker-configuration.d.ts
+poc/importer/.build/
+poc/importer/public/app.js
+.wrangler/

@@ -1,0 +1,252 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 6vh 20px;
+  background: #3a6ea5;
+  color: #222;
+  font:
+    13px Tahoma,
+    Verdana,
+    sans-serif;
+}
+.window {
+  max-width: 920px;
+  margin: auto;
+  border: 3px solid #0055e5;
+  border-top: 0;
+  border-radius: 8px 8px 0 0;
+  background: #ece9d8;
+  box-shadow:
+    0 0 0 1px #003b9d,
+    3px 6px 18px #102b5060;
+  overflow: hidden;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #fff;
+  padding: 9px 12px;
+  background: linear-gradient(#0997ff, #0868f5 45%, #0043be);
+  text-shadow: 1px 1px #003985;
+}
+header > span:first-child {
+  font-size: 23px;
+}
+h1 {
+  flex: 1;
+  font:
+    bold 15px 'Trebuchet MS',
+    Tahoma,
+    sans-serif;
+  margin: 0;
+}
+.badge {
+  border: 1px solid #b3d8ff;
+  padding: 2px 6px;
+  font: 10px monospace;
+  letter-spacing: 1px;
+}
+nav {
+  display: flex;
+  gap: 20px;
+  padding: 12px 20px;
+  background: #f4f2e7;
+  border-bottom: 1px solid #aca899;
+  color: #777668;
+}
+nav .active {
+  color: #003c74;
+  font-weight: bold;
+}
+.content {
+  padding: 30px;
+}
+.eyebrow {
+  color: #52739b;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+h2 {
+  font:
+    bold 21px 'Trebuchet MS',
+    Tahoma,
+    sans-serif;
+  margin: 10px 0;
+}
+p {
+  line-height: 1.65;
+  margin: 8px 0;
+}
+.intro {
+  max-width: 620px;
+  margin-bottom: 20px;
+}
+.mode {
+  padding: 9px 12px;
+  border: 1px solid #9eb3ca;
+  background: #e1ebf8;
+  color: #20436d;
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 9px;
+}
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+input {
+  min-width: 0;
+  flex: 1;
+  padding: 11px;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  font:
+    13px Tahoma,
+    sans-serif;
+}
+button,
+.button {
+  cursor: pointer;
+  font:
+    13px Tahoma,
+    sans-serif;
+  color: #111;
+  border: 1px solid #496886;
+  border-radius: 3px;
+  background: linear-gradient(#fffefa, #f6f4ec 42%, #e1ddcc);
+  box-shadow:
+    inset 1px 1px #fff,
+    inset -1px -1px #c2bead;
+  padding: 9px 15px;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-block;
+}
+button:hover,
+.button:hover {
+  outline: 2px solid #f5cd70;
+  outline-offset: -3px;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid #316ac5;
+  outline-offset: 2px;
+}
+.hint {
+  color: #656558;
+  font-size: 11px;
+}
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0;
+  padding: 12px;
+  background: #faf9f3;
+  border: 1px solid #c3c0ae;
+  min-height: 53px;
+}
+.activity p {
+  flex: 1;
+  margin: 0;
+}
+#indicator {
+  color: #6e8870;
+}
+.activity.error #indicator {
+  color: #af4031;
+}
+.activity.error {
+  background: #fff0df;
+  border-color: #cda68c;
+}
+.activity.busy #indicator {
+  color: #316ac5;
+}
+.result-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.result-heading h2 {
+  font-size: 15px;
+}
+#size {
+  font-size: 11px;
+  color: #656558;
+}
+video {
+  width: 100%;
+  max-height: 400px;
+  background: #111;
+  border: 1px solid #7e7e75;
+}
+.save-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 13px 0 22px;
+}
+.save-row p {
+  color: #656558;
+  font-size: 12px;
+}
+aside {
+  border-top: 1px solid #c5c1af;
+  padding-top: 18px;
+  color: #656558;
+  font-size: 12px;
+}
+aside strong {
+  color: #003c74;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 12px;
+  border-top: 1px solid #aca899;
+  font-size: 10px;
+  color: #656558;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  body {
+    padding: 15px 9px;
+  }
+  .content {
+    padding: 20px 16px;
+  }
+  .input-row,
+  .save-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  nav {
+    gap: 12px;
+    font-size: 10px;
+    padding: 12px;
+  }
+  footer {
+    flex-wrap: wrap;
+  }
+  h2 {
+    font-size: 19px;
+  }
+}

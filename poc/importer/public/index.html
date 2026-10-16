@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Loop Study · Private Import Lab</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <main class="window">
+      <header>
+        <span aria-hidden="true">▣</span>
+        <h1>Loop Study — Private Import Lab</h1>
+        <span class="badge">POC</span>
+      </header>
+      <nav aria-label="Import stages">
+        <span class="active">1 · Retrieve source</span
+        ><span>2 · Verify playback</span><span>3 · Save locally</span>
+      </nav>
+      <div class="content">
+        <section class="intro">
+          <p class="eyebrow">PRIVATE WORKSPACE</p>
+          <h2>Can we get a playable recording?</h2>
+          <p>
+            This lab tests server-side YouTube retrieval before we build a range
+            editor. Your public Loop Study library is separate.
+          </p>
+        </section>
+        <div class="mode" id="mode" role="status">Checking access…</div>
+        <form id="import-form">
+          <label for="youtube-url">YouTube video link</label>
+          <div class="input-row">
+            <input
+              id="youtube-url"
+              name="video"
+              type="text"
+              placeholder="https://www.youtube.com/watch?v=…"
+              required
+              autocomplete="off"
+              spellcheck="false"
+            /><button id="retrieve" disabled>Retrieve recording</button>
+          </div>
+          <p class="hint">
+            Public videos up to 5 minutes · MP4 with audio · 25 MiB maximum
+          </p>
+        </form>
+        <div class="activity" aria-live="polite">
+          <span id="indicator" aria-hidden="true">●</span>
+          <p id="status">Ready when you are.</p>
+          <button id="cancel" type="button" hidden>Cancel</button>
+        </div>
+        <section id="result" hidden>
+          <div class="result-heading">
+            <h2 id="video-title">Retrieved recording</h2>
+            <span id="size"></span>
+          </div>
+          <video id="preview" controls playsinline preload="metadata">
+            <track kind="captions" />
+          </video>
+          <div class="save-row">
+            <a id="download" class="button">Save MP4</a>
+            <p>
+              Then use <strong>Add videos…</strong> in Loop Study. This POC does
+              not trim or write to your study library.
+            </p>
+          </div>
+        </section>
+        <aside>
+          <strong>What this proves</strong>
+          <p>
+            A successful result must contain real video bytes and play here. If
+            YouTube blocks the source or only offers streams requiring
+            deciphering, this lab reports the limitation rather than returning
+            an embedded link.
+          </p>
+        </aside>
+      </div>
+      <footer>
+        <span>Private importer · no server-side media storage</span
+        ><span>Loop Study / Experimental</span>
+      </footer>
+    </main>
+  </body>
+</html>

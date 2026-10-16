@@ -7,3 +7,10 @@ test-results/
 .env.*
 !.env.example
 .DS_Store
+
+# Private importer POC
+.wrangler/
+.dev.vars
+.dev.vars.*
+poc/importer/.build/
+poc/importer/public/app.js

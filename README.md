@@ -81,3 +81,7 @@ tests/                      Model/storage tests and Playwright browser scenarios
 ```
 
 The controller owns playback state; components render it with Svelte bindings and event handlers. There are no global model objects, inline script loaders, imperative DOM-rendered lists or desktop bridge dependencies.
+
+## Private importer experiment
+
+A parked Cloudflare Access-protected retrieval POC lives in [poc/importer](poc/importer/README.md). Start its loopback-only preview with `pnpm importer:dev`. It worked locally but YouTube blocked the deployed Worker with bot verification. The Worker has been taken offline; the code is preserved on `feature/private-importer-poc`. Trimming and automatic library import are not implemented.

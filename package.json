@@ -15,7 +15,11 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "importer:dev": "pnpm --filter @bali-driller/importer-poc dev",
+    "importer:check": "pnpm --filter @bali-driller/importer-poc check",
+    "importer:test": "pnpm --filter @bali-driller/importer-poc test",
+    "importer:build": "pnpm --filter @bali-driller/importer-poc build"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",
