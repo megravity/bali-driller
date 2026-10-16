@@ -1,0 +1,331 @@
+{
+  "time": "2026-10-16T10:35:05.053Z",
+  "browser": "156.0.8078.4",
+  "youtubejs": "18.1.0",
+  "results": [
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "M7lc1UVf-VE",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "M7lc1UVf-VE",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "jNQXAC9IVRw",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "jNQXAC9IVRw",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "aqz-KE-bpKQ",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "http://127.0.0.1:4187/",
+      "origin": "http://127.0.0.1:4187",
+      "ok": false,
+      "id": "aqz-KE-bpKQ",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "M7lc1UVf-VE",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "M7lc1UVf-VE",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "jNQXAC9IVRw",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "jNQXAC9IVRw",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "aqz-KE-bpKQ",
+      "mode": "default",
+      "stage": "session",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/sw.js_data",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/config",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        },
+        {
+          "host": "www.youtube.com",
+          "path": "/iframe_api",
+          "method": "GET",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "GET https://www.youtube.com/sw.js_data: net::ERR_FAILED",
+        "POST https://www.youtube.com/youtubei/v1/config: net::ERR_FAILED",
+        "GET https://www.youtube.com/iframe_api: net::ERR_FAILED"
+      ]
+    },
+    {
+      "target": "https://megravity.github.io/bali-driller/",
+      "origin": "https://balisong.deu.tz",
+      "ok": false,
+      "id": "aqz-KE-bpKQ",
+      "mode": "local-session",
+      "stage": "video-info",
+      "error": "TypeError: Failed to fetch",
+      "trace": [
+        {
+          "host": "www.youtube.com",
+          "path": "/youtubei/v1/player",
+          "method": "POST",
+          "error": "TypeError: Failed to fetch"
+        }
+      ],
+      "diagnostics": [
+        "POST https://www.youtube.com/youtubei/v1/player: net::ERR_FAILED"
+      ]
+    }
+  ]
+}

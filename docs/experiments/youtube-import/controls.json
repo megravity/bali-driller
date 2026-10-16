@@ -1,0 +1,60 @@
+[
+  {
+    "origin": "http://127.0.0.1:4187",
+    "workerSameOriginControl": {
+      "ok": true,
+      "status": 200,
+      "bytes": 45
+    },
+    "youtubeDirectFetch": {
+      "ok": false,
+      "error": "Failed to fetch"
+    },
+    "consoleErrors": [
+      "Access to fetch at 'https://www.youtube.com/iframe_api' from origin 'http://127.0.0.1:4187' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "networkErrors": [
+      {
+        "requestId": "35026.4",
+        "timestamp": 248956.719852,
+        "type": "Fetch",
+        "errorText": "net::ERR_FAILED",
+        "canceled": false,
+        "corsErrorStatus": {
+          "corsError": "MissingAllowOriginHeader",
+          "failedParameter": ""
+        }
+      }
+    ]
+  },
+  {
+    "origin": "https://balisong.deu.tz",
+    "workerSameOriginControl": {
+      "ok": true,
+      "status": 200,
+      "bytes": 16705
+    },
+    "youtubeDirectFetch": {
+      "ok": false,
+      "error": "Failed to fetch"
+    },
+    "consoleErrors": [
+      "Access to fetch at 'https://www.youtube.com/iframe_api' from origin 'https://balisong.deu.tz' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "networkErrors": [
+      {
+        "requestId": "35028.28",
+        "timestamp": 248957.246115,
+        "type": "Fetch",
+        "errorText": "net::ERR_FAILED",
+        "canceled": false,
+        "corsErrorStatus": {
+          "corsError": "MissingAllowOriginHeader",
+          "failedParameter": ""
+        }
+      }
+    ]
+  }
+]
