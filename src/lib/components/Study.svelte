@@ -30,7 +30,7 @@
       window.innerWidth <= 1100 &&
       !(
         event.target instanceof Element &&
-        event.target.closest('#library-panel,#library-toggle')
+        event.target.closest('#library-panel,#library-toggle,#menu-toggle')
       )
     )
       s.libraryVisible = false;
@@ -42,7 +42,11 @@
       window.innerWidth <= 1100
     ) {
       s.libraryVisible = false;
-      libraryToggle.focus();
+      document.getElementById('menu-toggle')?.focus();
+    }
+    if (event.key === 'Escape') {
+      s.menuOpen = false;
+      if (!document.fullscreenElement) s.expanded = false;
     }
     if (stage) study.shortcut(event, () => dialogs.showHelp(), stage);
   }
@@ -71,6 +75,9 @@
   onMount(() => {
     const compact = window.matchMedia('(max-width: 1100px)');
     s.libraryVisible = !compact.matches;
+    s.editing = !window.matchMedia(
+      '(max-width: 700px), (max-height: 600px) and (pointer: coarse)'
+    ).matches;
     const resize = (event: MediaQueryListEvent) => {
       s.libraryVisible = !event.matches;
     };
@@ -97,8 +104,14 @@
   onfullscreenchange={() => (s.expanded = document.fullscreenElement === shell)}
 />
 
-<div bind:this={shell} class="shell" class:library-hidden={!s.libraryVisible}>
-  <header class="masthead">
+<div
+  bind:this={shell}
+  class="shell"
+  class:library-hidden={!s.libraryVisible}
+  class:practice-mode={!s.editing}
+  class:player-expanded={s.expanded}
+>
+  <header class="masthead" class:sr-only={!s.editing}>
     <Icon name="app" />
     <div class="window-title">
       <h1>
@@ -115,10 +128,18 @@
       ><Icon name="window-expand" /></button
     >
   </header>
-  <nav class="xp-toolbar" aria-label="Application tools">
+  <nav
+    id="app-menu"
+    class="app-menu"
+    aria-label="Application tools"
+    hidden={!s.menuOpen}
+  >
     <button
       title="Import videos"
-      onclick={chooseFiles}
+      onclick={() => {
+        s.menuOpen = false;
+        chooseFiles();
+      }}
       disabled={!s.available || s.importing}
       ><Icon name="toolbar-import" />Import…</button
     ><span class="toolbar-divider" aria-hidden="true"></span>
@@ -127,27 +148,39 @@
       id="library-toggle"
       aria-expanded={s.libraryVisible}
       aria-controls="library-panel"
-      onclick={() => (s.libraryVisible = !s.libraryVisible)}>Library</button
+      onclick={() => {
+        s.libraryVisible = !s.libraryVisible;
+        s.menuOpen = false;
+      }}>Library</button
     >
     <button
       title="Edit title, creator and tags"
       aria-label="Edit video details"
-      onclick={() => dialogs.showProperties()}
+      onclick={() => {
+        s.menuOpen = false;
+        dialogs.showProperties();
+      }}
       disabled={!s.current}>Properties</button
     >
     <button
       aria-label="Keyboard shortcuts and settings"
       title="Keyboard shortcuts and settings"
-      onclick={() => dialogs.showHelp()}>Help</button
+      onclick={() => {
+        s.menuOpen = false;
+        dialogs.showHelp();
+      }}>Help</button
     >
   </nav>
   <div class="workspace">
-    <Library {study} onimport={chooseFiles} /><VideoPlayer
-      {study}
-      onimport={chooseFiles}
-      bind:video
-      bind:stage
-    /><Playback {study} onsave={() => dialogs.showSection()} />
+    <Library {study} onimport={chooseFiles} />
+    <div class="player-column player-panel">
+      <VideoPlayer
+        {study}
+        onimport={chooseFiles}
+        bind:video
+        bind:stage
+      /><Playback {study} onsave={() => dialogs.showSection()} />
+    </div>
   </div>
   <footer class="storage-status" class:storage-failed={!!s.storageError}>
     <span role="status">{s.saveStatus}</span><span

@@ -127,7 +127,7 @@
 </dialog>
 <dialog bind:this={helpDialog} aria-labelledby="help-title">
   <div class="dialog-heading">
-    <h2 id="help-title">Keyboard Shortcuts & Settings</h2>
+    <h2 id="help-title">Help & Settings</h2>
     <button onclick={() => helpDialog.close()} aria-label="Close">×</button>
   </div>
   <div class="shortcut-list">
@@ -160,8 +160,11 @@
     </details>
   </div>
   <p class="fineprint">
-    Zoom with + / − below the video, then drag the video to inspect the hands.
-    Keyboard shortcuts are paused while you type.
+    Open View for mirror, sound, zoom and fullscreen. Drag a zoomed video to
+    inspect the hands. Drag A or B directly on the loop timeline; use Zoom + for
+    finer adjustments. With a handle focused, arrow keys move it by 0.05 seconds
+    (Shift: 0.01 seconds). Practise loop returns to the large video; saving a
+    named section is optional. Keyboard shortcuts are paused while you type.
   </p>
   <p class="fineprint">
     Videos, properties and saved sections are stored in this browser on this

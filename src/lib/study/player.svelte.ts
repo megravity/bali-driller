@@ -5,6 +5,7 @@ import type {
   StudyState,
   VideoPointerEvent
 } from './types.ts';
+import { moveBoundary } from './precision.ts';
 import { clamp, speeds, validSection } from './model.ts';
 import { openLibrary, readLastClip, rememberClip } from './storage.ts';
 
@@ -31,6 +32,12 @@ export function createStudy() {
     muted: true,
     libraryVisible: true,
     mediaError: false,
+    mediaErrorMessage: '',
+    recovering: false,
+    editing: true,
+    activeBoundary: 'a',
+    precisionZoom: 0,
+    menuOpen: false,
     message: '',
     saveStatus: 'Opening local library…',
     storageError: '',
@@ -53,6 +60,117 @@ export function createStudy() {
     resumeAfterScrub = false;
   let saveChain = Promise.resolve();
   let pendingSaves = 0;
+  let recoverySource = '';
+  let recoveryTimer: ReturnType<typeof setTimeout> | undefined;
+  let restore: {
+    time: number;
+    a: number;
+    b: number;
+    looping: boolean;
+    selectedSection: string | null;
+  } | null = null;
+  let wasHidden = false;
+  function releaseRecoverySource() {
+    if (recoverySource) URL.revokeObjectURL(recoverySource);
+    recoverySource = '';
+  }
+  function showMediaError(
+    message = 'The recording could not load. Retry the saved video first. If the problem continues, try a compatible H.264 MP4. Your library copy and sections are kept.'
+  ) {
+    clearTimeout(recoveryTimer);
+    state.ready = state.playing = state.recovering = false;
+    state.mediaError = true;
+    state.mediaErrorMessage = message;
+  }
+  async function recoverVideo() {
+    if (!alive || !store || !state.current || state.recovering) return;
+    const clip = state.current;
+    const load = ++serial;
+    restore ??= {
+      time: state.time,
+      a: state.a,
+      b: state.b,
+      looping: state.looping,
+      selectedSection: state.selectedSection
+    };
+    video.pause();
+    state.recovering = true;
+    state.ready = state.playing = state.mediaError = false;
+    clearTimeout(recoveryTimer);
+    recoveryTimer = setTimeout(() => {
+      if (load === serial) {
+        serial++;
+        showMediaError(
+          'The saved video took too long to reopen. Try again; your library copy is kept.'
+        );
+      }
+    }, 15000);
+    try {
+      const source = await store.freshSource(clip.id);
+      if (!alive || load !== serial || state.current?.id !== clip.id) {
+        if (source.startsWith('blob:')) URL.revokeObjectURL(source);
+        return;
+      }
+      video.removeAttribute('src');
+      video.load();
+      releaseRecoverySource();
+      if (source.startsWith('blob:')) recoverySource = source;
+      video.src = source;
+      video.load();
+    } catch (error) {
+      if (alive && load === serial)
+        showMediaError(
+          error instanceof Error
+            ? error.message
+            : 'Could not reopen the saved video. Please retry.'
+        );
+    }
+  }
+  function visibilityChanged() {
+    if (document.hidden) {
+      wasHidden = true;
+      video?.pause();
+    } else if (wasHidden) {
+      wasHidden = false;
+      void recoverVideo();
+    }
+  }
+  function pageShown(event: PageTransitionEvent) {
+    if (event.persisted) void recoverVideo();
+  }
+  function selectBoundary(boundary: 'a' | 'b') {
+    state.activeBoundary = boundary;
+    video.pause();
+    seek(state[boundary]);
+  }
+  function adjustBoundary(value: number) {
+    if (!state.ready) return;
+    const next = moveBoundary(
+      state.a,
+      state.b,
+      state.duration,
+      state.activeBoundary,
+      value
+    );
+    state.a = next.a;
+    state.b = next.b;
+    state.selectedSection = null;
+    state.looping = true;
+    video.pause();
+    seek(state[state.activeBoundary]);
+  }
+  function setEditing(editing: boolean) {
+    state.editing = editing;
+    state.menuOpen = false;
+    if (editing) video?.pause();
+  }
+  function practiseLoop() {
+    if (!state.ready) return;
+    state.looping = true;
+    setEditing(false);
+    seek(state.a);
+    void play();
+  }
 
   function toast(message: string) {
     state.message = message;
@@ -99,6 +217,10 @@ export function createStudy() {
   }
   function openClip(clip: Clip | null) {
     serial++;
+    clearTimeout(recoveryTimer);
+    restore = null;
+    state.recovering = false;
+    state.precisionZoom = 0;
     video.pause();
     state.ready = false;
     state.playing = false;
@@ -108,6 +230,7 @@ export function createStudy() {
     state.looping = state.mediaError = false;
     resetTransform();
     if (window.innerWidth <= 1100) state.libraryVisible = false;
+    releaseRecoverySource();
     if (!clip) {
       video.removeAttribute('src');
       video.load();
@@ -125,7 +248,22 @@ export function createStudy() {
     )
       return;
     state.ready = true;
-    state.duration = state.b = state.current.duration = video.duration;
+    state.duration = state.current.duration = video.duration;
+    clearTimeout(recoveryTimer);
+    state.recovering = state.mediaError = false;
+    if (restore) {
+      state.a = clamp(restore.a, 0, Math.max(0, state.duration - 0.04));
+      state.b = clamp(
+        restore.b || state.duration,
+        state.a + 0.04,
+        state.duration
+      );
+      state.looping = restore.looping;
+      state.selectedSection = restore.selectedSection;
+      video.currentTime = clamp(restore.time, 0, state.duration);
+      state.time = video.currentTime;
+      restore = null;
+    } else state.b = state.duration;
     video.playbackRate = state.current.speed;
     persist();
   }
@@ -174,7 +312,9 @@ export function createStudy() {
       await video.play();
     } catch (error) {
       if (!(error instanceof Error) || error.name !== 'AbortError')
-        report(error);
+        showMediaError(
+          'Playback stopped. Retry the saved video, then press Play again.'
+        );
     }
   }
   function togglePlay() {
@@ -223,6 +363,8 @@ export function createStudy() {
       return;
     }
     state[which] = time;
+    state.activeBoundary = which;
+    state.looping = true;
     state.selectedSection = null;
   }
   function toggleLoop() {
@@ -278,6 +420,8 @@ export function createStudy() {
   function clearSection() {
     state.a = 0;
     state.b = state.duration;
+    state.looping = false;
+    state.precisionZoom = 0;
     state.selectedSection = null;
   }
   function saveSection(name: string) {
@@ -419,11 +563,17 @@ export function createStudy() {
     drag = null;
   }
   async function fullscreen(element: HTMLElement) {
-    try {
+    const shell = element.closest<HTMLElement>('.shell') || element;
+    if (state.expanded) {
       if (document.fullscreenElement) await document.exitFullscreen();
-      else await element.requestFullscreen();
+      state.expanded = false;
+      return;
+    }
+    state.expanded = true;
+    try {
+      await shell.requestFullscreen?.();
     } catch {
-      toast('Fullscreen is unavailable here.');
+      /* Keep the expanded layout on iPhone. */
     }
   }
   function shortcut(
@@ -473,6 +623,8 @@ export function createStudy() {
   }
   async function initialize(element: HTMLVideoElement, demoSource: string) {
     video = element;
+    document.addEventListener('visibilitychange', visibilityChanged);
+    window.addEventListener('pageshow', pageShown);
     const tick = () => {
       checkLoop();
       frame = requestAnimationFrame(tick);
@@ -503,15 +655,25 @@ export function createStudy() {
   }
   function destroy() {
     alive = false;
+    serial++;
+    clearTimeout(recoveryTimer);
+    document.removeEventListener('visibilitychange', visibilityChanged);
+    window.removeEventListener('pageshow', pageShown);
     cancelAnimationFrame(frame);
     clearTimeout(toastTimer);
     video?.pause();
     video?.removeAttribute('src');
     video?.load();
+    releaseRecoverySource();
     saveChain.finally(() => store?.close());
   }
   return {
     state,
+    adjustBoundary,
+    selectBoundary,
+    setEditing,
+    practiseLoop,
+    recoverVideo,
     initialize,
     destroy,
     toast,
@@ -553,8 +715,7 @@ export function createStudy() {
     fullscreen,
     shortcut,
     mediaError: () => {
-      state.ready = state.playing = false;
-      state.mediaError = true;
+      if (state.current && video.getAttribute('src')) showMediaError();
     }
   };
 }
