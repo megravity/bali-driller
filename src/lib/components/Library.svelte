@@ -16,6 +16,11 @@
 <aside id="library-panel" class="library panel" hidden={!s.libraryVisible}>
   <div class="panel-heading">
     <h2>Video Library</h2>
+    <button
+      id="library-close"
+      aria-label="Close library"
+      onclick={() => (s.libraryVisible = false)}>×</button
+    >
     <span>{String(s.clips.length).padStart(2, '0')}</span>
   </div>
   <div class="library-tools">

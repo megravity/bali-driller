@@ -50,9 +50,9 @@ SSR stays enabled and all routes are prerendered, with trailing slashes and no S
 
 ## Data and persistence
 
-- **IndexedDB** stores imported video blobs, titles, creators, tags, thumbnails, playback speed, mirroring, nominal frame rate and saved A/B sections. Changes save automatically; the footer reports pending, successful or failed saves. A failed metadata save can be retried.
+- **IndexedDB** stores imported video bytes (and reads existing Blob records), titles, creators, tags, thumbnails, playback speed, mirroring, nominal frame rate and saved A/B sections. Changes save automatically; the footer reports pending, successful or failed saves. A failed metadata save can be retried.
 - **localStorage** remembers the last opened clip. If unavailable, the library still works through IndexedDB.
-- The bundled demo is a separate `static/media/demo.mp4` asset, extracted byte-for-byte from the original HTML. It is seeded once per library; deleting it or emptying the library does not recreate it.
+- The bundled demo is a separate `static/media/demo.mp4` asset, updated from the original Loop Study v0.8.1 source. It is seeded once per library; deleting it or emptying the library does not recreate it.
 - Multi-file imports use one transaction. If a batch fails, none of that batch is saved. Object URLs are recreated on load and revoked on deletion or teardown.
 - The app requests persistent browser storage after an import. Browsers may decline. See [MDN's persistence documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/persist).
 
@@ -74,10 +74,16 @@ src/lib/components/         App shell, library, video player, playback, dialogs,
 src/lib/study/model.ts       Time formatting, validation and metadata normalization
 src/lib/study/storage.ts     IndexedDB transactions, upgrade and blob URL lifecycle
 src/lib/study/player.svelte.ts  Per-instance reactive playback and library controller
-src/app.css                 Original XP visual styling and responsive adjustments
-static/media/demo.mp4       Extracted demo recording (~13 MB)
+src/app.css                 Graphite styling and responsive practice/editor layouts
+static/media/demo.mp4       Bundled v0.8.1 demo recording (~8 MB)
 tests/                      Model/storage tests and Playwright browser scenarios
 .github/workflows/          GitHub Pages build and deployment
 ```
 
 The controller owns playback state; components render it with Svelte bindings and event handlers. There are no global model objects, inline script loaders, imperative DOM-rendered lists or desktop bridge dependencies.
+
+## Loop editor and recovery
+
+On desktop, the loop editor occupies a right sidebar so the video keeps its height. On phones, the app starts in practice mode; choose **Edit loop** to open the editor. Drag **A** or **B** directly on the timeline. Handles cannot cross and have separate hit areas for short loops. **Zoom +** magnifies the timeline around the last adjusted endpoint; **Whole clip** restores both endpoints. Arrow keys move a focused handle by 0.05 seconds, or 0.01 seconds with Shift. **Practise loop** plays the selected range without requiring a saved section.
+
+If media loading fails, **Retry saved video** rereads its local data into a fresh media URL while retaining the loop, position and selected section. Returning to a hidden tab also reopens its saved media and leaves playback paused. Unexpectedly closed IndexedDB connections reopen on the next operation. Existing Blob-backed records remain readable; new imports store independent video bytes. The app icons and manifest support adding the page to a home screen, but do not provide offline caching.

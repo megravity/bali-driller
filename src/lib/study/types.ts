@@ -26,6 +26,8 @@ export interface Clip extends ClipMetadata {
 
 export interface StoredClip extends ClipMetadata {
   blob?: Blob;
+  bytes?: ArrayBuffer;
+  mediaType?: string;
   source?: string;
   isDemo?: boolean;
   originalName?: string;
@@ -65,6 +67,12 @@ export interface StudyState {
   muted: boolean;
   libraryVisible: boolean;
   mediaError: boolean;
+  mediaErrorMessage: string;
+  recovering: boolean;
+  editing: boolean;
+  activeBoundary: 'a' | 'b';
+  precisionZoom: number;
+  menuOpen: boolean;
   message: string;
   saveStatus: string;
   storageError: string;

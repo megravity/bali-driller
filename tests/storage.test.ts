@@ -81,7 +81,8 @@ test('an aborted batch leaves no partially imported videos', async () => {
   let imported = 0;
   IDBObjectStore.prototype.put = function (record, ...args) {
     const request = originalPut.call(this, record, ...args);
-    if (record.blob && ++imported === 2) this.transaction.abort();
+    if ((record.blob || record.bytes) && ++imported === 2)
+      this.transaction.abort();
     return request;
   };
   try {
@@ -112,4 +113,87 @@ test('a blocked database upgrade reports an actionable error', async () => {
   );
   oldTab.close();
   await deleteDatabase();
+});
+
+test('recovery rereads saved bytes into independently revocable URLs', async () => {
+  const library = await openLibrary('/media/demo.mp4');
+  try {
+    const [clip] = await library.importFiles([
+      new File(['original bytes'], 'practice.mp4', { type: 'video/mp4' })
+    ]);
+    const first = await library.freshSource(clip.id);
+    const second = await library.freshSource(clip.id);
+    assert.notEqual(first, second);
+    URL.revokeObjectURL(first);
+    assert.equal(await (await fetch(second)).text(), 'original bytes');
+    URL.revokeObjectURL(second);
+    await library.remove(clip.id);
+    await assert.rejects(library.freshSource(clip.id), /no longer/);
+  } finally {
+    library.close();
+    await deleteDatabase();
+  }
+});
+
+test('recovery preserves legacy File-backed records and their saved sections', async () => {
+  const library = await openLibrary('/media/demo.mp4');
+  const request = indexedDB.open('loop-study-v1', 2);
+  const db = await new Promise<IDBDatabase>((resolve) => {
+    request.onsuccess = () => resolve(request.result);
+  });
+  const transaction = db.transaction('clips', 'readwrite');
+  transaction.objectStore('clips').put({
+    id: 'legacy',
+    title: 'Old clip',
+    blob: new File(['legacy bytes'], 'old.mp4', { type: 'video/mp4' }),
+    duration: 10,
+    sections: [{ id: 's', name: 'Keep me', a: 1, b: 3, speed: 0.5 }]
+  });
+  await new Promise<void>((resolve) => {
+    transaction.oncomplete = () => resolve();
+  });
+  db.close();
+  try {
+    const source = await library.freshSource('legacy');
+    assert.equal(await (await fetch(source)).text(), 'legacy bytes');
+    URL.revokeObjectURL(source);
+    assert.equal(
+      (await library.list()).find((c) => c.id === 'legacy')?.sections[0].name,
+      'Keep me'
+    );
+  } finally {
+    library.close();
+    await deleteDatabase();
+  }
+});
+
+test('an unexpectedly closed database reconnects without losing recordings', async () => {
+  const library = await openLibrary('/media/demo.mp4');
+  const [clip] = await library.importFiles([
+    new File(['kept bytes'], 'kept.mp4')
+  ]);
+  const original = IDBDatabase.prototype.transaction;
+  let interrupted = false;
+  IDBDatabase.prototype.transaction = function (...args) {
+    if (!interrupted) {
+      interrupted = true;
+      this.close();
+    }
+    return original.apply(this, args);
+  };
+  try {
+    const source = await library.freshSource(clip.id);
+    assert.equal(await (await fetch(source)).text(), 'kept bytes');
+    URL.revokeObjectURL(source);
+    await library.save({ ...clip, title: 'Still here' });
+    assert.equal(
+      (await library.list()).find((c) => c.id === clip.id)?.title,
+      'Still here'
+    );
+  } finally {
+    IDBDatabase.prototype.transaction = original;
+    library.close();
+    await assert.rejects(library.list(), /closed/);
+    await deleteDatabase();
+  }
 });

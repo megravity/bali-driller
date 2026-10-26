@@ -15,7 +15,7 @@
   const s = $derived(study.state);
 </script>
 
-<main class="player-panel panel">
+<section class="video-panel" aria-label="Video player">
   <div bind:this={stage} class="stage">
     <div
       class="video-viewport"
@@ -57,64 +57,89 @@
     {#if s.mediaError}
       <div class="video-error" role="alert">
         <h3>This recording could not be played.</h3>
-        <p>
-          This browser cannot decode the recording. Import an H.264 MP4 or
-          another format supported by your browser. Your library copy is kept.
-        </p>
+        <p>{s.mediaErrorMessage}</p>
+        <button onclick={study.recoverVideo} disabled={s.recovering}
+          >Retry saved video</button
+        >
       </div>
     {/if}
-  </div>
-  <div class="view-toolbar">
-    <div class="view-actions">
+    {#if s.recovering}<div class="recovery-status" role="status">
+        Reopening saved video…
+      </div>{/if}
+    <div class="stage-top">
       <button
-        id="mirror"
-        class="xp-icon-button"
-        aria-label="Mirror video"
-        aria-pressed={!!s.current?.mirror}
-        title="Mirror video (M)"
-        onclick={study.mirror}
-        disabled={!s.ready}><Icon name="mirror" /></button
+        id="menu-toggle"
+        aria-label="Open menu"
+        aria-expanded={s.menuOpen}
+        aria-controls="app-menu"
+        onclick={() => (s.menuOpen = !s.menuOpen)}>☰</button
       >
-      <button
-        id="mute"
-        class="xp-icon-button"
-        aria-label="Mute audio"
-        aria-pressed={s.muted}
-        title={s.muted
-          ? 'Sound off — click to unmute'
-          : 'Sound on — click to mute'}
-        onclick={study.mute}
-        disabled={!s.ready}><Icon name="mute" /></button
-      >
+      <div class="stage-right">
+        <button
+          id="quick-zoom"
+          aria-pressed={s.zoom > 1}
+          disabled={!s.ready}
+          onclick={() =>
+            s.zoom > 1 ? study.resetTransform() : study.changeZoom(0.55)}
+          >{s.zoom > 1 ? 'Fit' : 'Zoom'}</button
+        >
+        <details id="view-options">
+          <summary aria-label="Video view settings">View</summary>
+          <div class="view-toolbar">
+            <div class="view-actions">
+              <button
+                id="mirror"
+                class="xp-icon-button"
+                aria-label="Mirror video"
+                aria-pressed={!!s.current?.mirror}
+                title="Mirror video (M)"
+                onclick={study.mirror}
+                disabled={!s.ready}><Icon name="mirror" /></button
+              >
+              <button
+                id="mute"
+                class="xp-icon-button"
+                aria-label="Mute audio"
+                aria-pressed={s.muted}
+                title={s.muted
+                  ? 'Sound off — click to unmute'
+                  : 'Sound on — click to mute'}
+                onclick={study.mute}
+                disabled={!s.ready}><Icon name="mute" /></button
+              >
+            </div>
+            <div class="zoom-controls">
+              <button
+                id="zoom-out"
+                aria-label="Zoom out"
+                onclick={() => study.changeZoom(-0.25)}
+                disabled={!s.ready || s.zoom <= 1}>−</button
+              >
+              <span id="zoom-level">{Math.round(s.zoom * 100)}%</span>
+              <button
+                id="zoom-in"
+                aria-label="Zoom in"
+                onclick={() => study.changeZoom(0.25)}
+                disabled={!s.ready || s.zoom >= 4}>+</button
+              >
+              <button
+                id="fit"
+                title="Show the whole video and reset pan"
+                onclick={study.resetTransform}
+                disabled={!s.ready}>Fit</button
+              >
+              <button
+                id="fullscreen"
+                title="Fullscreen viewer (F)"
+                aria-label="Fullscreen viewer"
+                onclick={() => stage && study.fullscreen(stage)}
+                disabled={!s.ready}
+                ><Icon name="fullscreen" /><span>Full Screen</span></button
+              >
+            </div>
+          </div>
+        </details>
+      </div>
     </div>
-    <div class="zoom-controls">
-      <button
-        id="zoom-out"
-        aria-label="Zoom out"
-        onclick={() => study.changeZoom(-0.25)}
-        disabled={!s.ready || s.zoom <= 1}>−</button
-      >
-      <span id="zoom-level">{Math.round(s.zoom * 100)}%</span>
-      <button
-        id="zoom-in"
-        aria-label="Zoom in"
-        onclick={() => study.changeZoom(0.25)}
-        disabled={!s.ready || s.zoom >= 4}>+</button
-      >
-      <button
-        id="fit"
-        title="Show the whole video and reset pan"
-        onclick={study.resetTransform}
-        disabled={!s.ready}>Fit</button
-      >
-      <button
-        id="fullscreen"
-        title="Fullscreen viewer (F)"
-        aria-label="Fullscreen viewer"
-        onclick={() => stage && study.fullscreen(stage)}
-        disabled={!s.ready}
-        ><Icon name="fullscreen" /><span>Full Screen</span></button
-      >
-    </div>
   </div>
-</main>
+</section>
