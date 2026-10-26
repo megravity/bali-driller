@@ -1,5 +1,21 @@
 # Repository Guidelines
 
+## Check Remote Changes Before Starting Work
+
+Start every new feature or fix by checking GitHub for newer work. Building on stale code causes avoidable merge conflicts later. These steps are safe to run every time and take seconds.
+
+1. Run `git fetch origin --prune` and `git status --short`. If the status output is not empty, stop and describe the existing edits instead of switching branches.
+2. Compare the local branch with the remote: `git log --oneline HEAD..origin/main`. An empty result means local work already includes everything on GitHub.
+3. On a clean `main`, run `git pull --ff-only` to catch up. Then create feature branches from `origin/main` so they always start current:
+
+   ```sh
+   git switch -c feature/<description> origin/main
+   ```
+
+4. Never discard, stash, or force-reset work to make the sync succeed. If local `main` and `origin/main` hold different commits, the tree contains an unfinished merge, or generated files are in the way, explain the situation and ask before proceeding.
+
+Generated output can survive a branch switch as untracked files, because Git leaves ignored and untracked paths alone when changing branches. `.wrangler/`, `.dev.vars*`, `poc/importer/.build/`, and `poc/importer/public/app.js` are ignored; never commit leftover build output, local state, or artifacts from another branch. Report the branch name, how many commits behind it is, and any conflict risk in one short sentence before implementing.
+
 ## Project Structure & Module Organization
 
 `src/routes/` contains the prerendered page and layout; `src/lib/components/` contains the app shell, library, player, playback controls, and dialogs. `src/lib/study/` separates shared types, validation, IndexedDB storage, and the reactive playback controller (`player.svelte.ts`). Global XP styling lives in `src/app.css`; bundled media lives in `static/media/`.
@@ -31,7 +47,7 @@ Use `node:test` and `node:assert/strict` for logic, fake-indexeddb for persisten
 
 ## Commit & Pull Request Guidelines
 
-Follow [CONTRIBUTING.md](CONTRIBUTING.md) for branches, local previews, submission, and review boundaries. History uses short, imperative subjects; no commit prefix convention is established. Keep commits focused. PR descriptions should explain the problem, resulting behavior, validation, and limitations. Link relevant issues and include screenshots for visible changes. Run `git diff --check` before committing.
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for branches, local previews, submission, and review boundaries. Finish the remote check above before the first edit of any task. Pull requests run `pnpm check` and `pnpm test` in CI; read the failing step's log before changing code, and still run `pnpm build` and `pnpm test:e2e` locally because CI covers neither. CodeRabbit's review comments are advisory: verify each suggestion against this file and the code, and raise disagreements with the maintainer rather than changing behavior to satisfy a comment. History uses short, imperative subjects; no commit prefix convention is established. Keep commits focused. PR descriptions should explain the problem, resulting behavior, validation, and limitations. Link relevant issues and include screenshots for visible changes. Run `git diff --check` before committing.
 
 ## Architecture & Data Constraints
 

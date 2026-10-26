@@ -1,0 +1,35 @@
+language: en-US
+tone_instructions: 'Keep reviews short and jargon-free; the maintainer reads them on a phone and the contributor is new to programming.'
+reviews:
+  profile: quiet
+  high_level_summary: true
+  high_level_summary_in_walkthrough: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  poem: false
+  in_progress_fortune: false
+  auto_approvals:
+    enabled: false
+  slop_detection:
+    enabled: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_filters:
+    - '!pnpm-lock.yaml'
+    - '!static/media/**'
+    - '!docs/**'
+    - '!build/**'
+    - '!.svelte-kit/**'
+    - '!poc/**'
+  path_instructions:
+    - path: 'src/**'
+      instructions: |
+        This is a Svelte 5 / SvelteKit static site. Prefer runes ($state, $derived, $effect) and `.svelte.ts` modules; flag leftover store subscriptions or legacy reactive statements.
+        IndexedDB owns video blobs and study metadata, and localStorage only remembers the last clip. Flag code that bypasses `src/lib/study/storage.ts`, risks losing stored data during a schema change, or fails to revoke object URLs on deletion or teardown.
+        The site is prerendered and served from a subpath: flag browser globals at module scope, Node or filesystem assumptions, and URLs that ignore the configured base path.
+        The XP-era look in `src/app.css` is intentional. Do not suggest visual redesigns or framework swaps.
+    - path: 'tests/**'
+      instructions: 'Tests use node:test with node:assert/strict and fake-indexeddb. Flag assertions that would pass even if the behavior under test were broken.'
