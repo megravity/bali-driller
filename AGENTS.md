@@ -47,7 +47,7 @@ Use `node:test` and `node:assert/strict` for logic, fake-indexeddb for persisten
 
 ## Commit & Pull Request Guidelines
 
-Follow [CONTRIBUTING.md](CONTRIBUTING.md) for branches, local previews, submission, and review boundaries. Finish the remote check above before the first edit of any task. Pull requests run `pnpm check` and `pnpm test` in CI; read the failing step's log before changing code, and still run `pnpm build` and `pnpm test:e2e` locally because CI covers neither. History uses short, imperative subjects; no commit prefix convention is established. Keep commits focused. PR descriptions should explain the problem, resulting behavior, validation, and limitations. Link relevant issues and include screenshots for visible changes. Run `git diff --check` before committing.
+Follow [CONTRIBUTING.md](CONTRIBUTING.md) for branches, local previews, submission, and review boundaries. Finish the remote check above before the first edit of any task. Pull requests run `pnpm check` and `pnpm test` in CI; read the failing step's log before changing code, and still run `pnpm build` and `pnpm test:e2e` locally because CI covers neither. CodeRabbit's review comments are advisory: verify each suggestion against this file and the code, and raise disagreements with the maintainer rather than changing behavior to satisfy a comment. History uses short, imperative subjects; no commit prefix convention is established. Keep commits focused. PR descriptions should explain the problem, resulting behavior, validation, and limitations. Link relevant issues and include screenshots for visible changes. Run `git diff --check` before committing.
 
 ## Architecture & Data Constraints
 
