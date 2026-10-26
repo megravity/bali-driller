@@ -2,6 +2,17 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    # Only run when a change can affect the published site, its build, or the checks that gate it.
+    paths:
+      - 'src/**'
+      - 'static/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
+      - '.nvmrc'
   workflow_dispatch:
 permissions:
   contents: read
