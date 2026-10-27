@@ -1,0 +1,335 @@
+/* Neutralise the steel palette across interface surfaces, leaving video untouched. */
+.shell {
+  --neutral: 1;
+}
+.masthead,
+.app-menu,
+.library,
+.practice-controls,
+.sections,
+.stage-top,
+dialog,
+#toast,
+#drop-overlay {
+  filter: grayscale(1);
+}
+@media (max-width: 1100px) {
+  .library {
+    width: 230px;
+  }
+  .editor-grid {
+    gap: 14px;
+  }
+  .sections {
+    padding: 10px 12px;
+  }
+  .practice-dock {
+    gap: 8px;
+  }
+}
+@media (max-width: 700px) {
+  body {
+    padding: 0;
+    background: #151515;
+  }
+  .shell {
+    height: 100dvh;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    padding: env(safe-area-inset-top) max(4px, env(safe-area-inset-right))
+      env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
+    box-shadow: none;
+  }
+  .workspace {
+    gap: 0;
+  }
+  .masthead {
+    height: 34px;
+    min-height: 34px;
+    padding: 2px 6px 4px;
+  }
+  .masthead .app-title {
+    display: none;
+  }
+  .stage {
+    min-height: 100px;
+    border-radius: 7px 7px 2px 2px;
+  }
+  .practice-mode .stage {
+    flex: 1;
+  }
+  .practice-controls {
+    border-radius: 0;
+  }
+  .loop-status {
+    padding: 7px 10px 0;
+    font-size: 12px;
+  }
+  #loop-status {
+    max-width: 70%;
+  }
+  .time-total {
+    display: none;
+  }
+  .practice-dock {
+    max-width: 430px;
+    padding: 8px 10px 12px;
+    gap: 7px;
+    grid-template-columns: 54px 1fr 76px 1fr;
+  }
+  #speed-select {
+    width: 76px;
+    font-size: 15px;
+  }
+  .sections {
+    max-height: 51dvh;
+    overflow: auto;
+    padding: 11px 10px 14px;
+    margin-top: 4px;
+    border-radius: 9px 9px 0 0;
+  }
+  .editor-heading {
+    margin-bottom: 10px;
+  }
+  .editor-heading button {
+    font-size: 13px;
+  }
+  .editor-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .overview-pane {
+    order: 0;
+  }
+  .precision-pane {
+    order: 1;
+  }
+  .frame-steps button {
+    min-height: 38px;
+  }
+  .timeline-wrap {
+    margin: 0 0 4px;
+    height: 58px;
+  }
+  .timeline-wrap input {
+    height: 58px;
+  }
+  .timeline-track {
+    top: 25px;
+  }
+  .fine-adjust {
+    grid-template-columns: 1fr 96px 1fr;
+  }
+  .precision-toolbar button {
+    min-height: 44px;
+  }
+  .section-list {
+    grid-template-columns: 1fr;
+  }
+  .save-row {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .save-row button {
+    font-size: 13px;
+  }
+  .app-menu {
+    left: 10px;
+    top: calc(env(safe-area-inset-top) + 60px);
+  }
+  .library[role='dialog'] {
+    top: calc(env(safe-area-inset-top) + 55px);
+    bottom: calc(env(safe-area-inset-bottom) + 8px);
+    left: 8px;
+    width: min(330px, calc(100% - 16px));
+  }
+  .stage-top {
+    inset: 9px 8px auto;
+  }
+  .stage-right {
+    gap: 5px;
+  }
+  .stage-right summary,
+  #quick-zoom {
+    padding: 10px 12px;
+  }
+}
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  body {
+    padding: 0;
+  }
+  .shell {
+    height: 100dvh;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    padding: env(safe-area-inset-top) max(6px, env(safe-area-inset-right))
+      env(safe-area-inset-bottom) max(6px, env(safe-area-inset-left));
+  }
+  .masthead {
+    display: none;
+  }
+  .player-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 8px;
+  }
+  .stage {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+  }
+  .practice-controls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .sections {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    max-height: none;
+    height: 100%;
+    margin: 0;
+    overflow: auto;
+    padding: 10px;
+  }
+  .editor-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .practice-mode .player-panel {
+    grid-template-columns: 1fr;
+  }
+  .practice-mode .stage {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .practice-mode .practice-controls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .time-total {
+    display: none;
+  }
+  .practice-dock {
+    max-width: 440px;
+    padding: 6px 10px 8px;
+    gap: 8px;
+  }
+  .loop-status {
+    padding-top: 4px;
+  }
+  .library[role='dialog'] {
+    top: 52px;
+    bottom: 8px;
+  }
+  .fine-adjust {
+    grid-template-columns: 1fr 86px 1fr;
+  }
+  .save-row {
+    flex-wrap: wrap;
+  }
+  .section-list {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 350px) {
+  .practice-dock {
+    gap: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    grid-template-columns: 54px 1fr 70px 1fr;
+  }
+  #speed-select {
+    width: 70px;
+  }
+  #restart,
+  #edit-loop {
+    font-size: 12px;
+  }
+  .fine-adjust {
+    grid-template-columns: 1fr 86px 1fr;
+  }
+  .fine-adjust button {
+    font-size: 12px;
+  }
+}
+.editor-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.precision-pane {
+  order: 0;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(290px, 1fr);
+  column-gap: 20px;
+  align-items: center;
+}
+.precision-toolbar {
+  margin: 0;
+}
+.precision-ruler {
+  grid-column: 1/-1;
+  width: 100%;
+}
+.fine-adjust {
+  grid-column: 1/-1;
+  width: min(460px, 100%);
+  justify-self: center;
+}
+.overview-pane {
+  order: 1;
+  border-top: 1px solid #ffffff20;
+  padding-top: 5px;
+}
+.overview-pane > summary {
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  color: #c9c9c9;
+  font-size: 13px;
+}
+.overview-pane .row-label {
+  margin-top: 7px;
+}
+.overview-pane .set-points,
+.overview-pane .frame-steps {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.save-row {
+  margin-top: 6px;
+  padding-top: 9px;
+}
+@media (max-width: 700px),
+  (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  .precision-pane {
+    display: block;
+  }
+  .precision-toolbar {
+    margin-top: 9px;
+  }
+  .fine-adjust {
+    width: 100%;
+  }
+  .editor-grid {
+    gap: 7px;
+  }
+}
+.stage-top {
+  filter: none;
+}
+@media (max-width: 700px) {
+  .view-toolbar {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 64px);
+    right: max(12px, env(safe-area-inset-right));
+    max-height: calc(100dvh - 100px);
+    overflow: auto;
+  }
+}

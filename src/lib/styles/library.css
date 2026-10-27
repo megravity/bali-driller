@@ -1,0 +1,181 @@
+.library {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 250px;
+  flex: none;
+  background: linear-gradient(#3d3d3d, #2a2a2a);
+  border: 1px solid #858585;
+  border-radius: 8px;
+  padding: 10px;
+  overflow: hidden;
+}
+.library-hidden .library {
+  display: none;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.panel-heading h2 {
+  flex: 1;
+}
+.panel-heading > span {
+  font:
+    12px Consolas,
+    monospace;
+  color: #cecece;
+}
+#library-close {
+  padding: 0;
+  font-size: 24px;
+  min-width: 44px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.library-tools {
+  padding: 7px 0 10px;
+}
+.import-button {
+  width: 100%;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  background: #1c1c1c;
+  border: 1px solid #8f8f8f;
+  border-radius: 4px;
+  padding: 7px 8px;
+  min-height: 44px;
+}
+.search > span {
+  font-size: 20px;
+}
+.search input {
+  width: 100%;
+  border: 0;
+  background: none;
+  outline: 0;
+}
+.library-list {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+.clip-card {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 6px;
+  padding: 9px;
+  text-align: left;
+  white-space: normal;
+  border: 1px solid #b9b9b91c;
+  box-shadow: none;
+  background: #222222;
+}
+.clip-card.selected {
+  background: #616161;
+  border-color: #c7c7c7;
+}
+.clip-thumb {
+  width: 40px;
+  height: 64px;
+  object-fit: cover;
+  flex: none;
+  background: #0e0e0e;
+  border-radius: 3px;
+}
+.thumb-placeholder {
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+}
+.clip-text {
+  min-width: 0;
+}
+.clip-text strong {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  overflow-wrap: anywhere;
+}
+.clip-text .creator,
+.clip-meta {
+  display: block;
+  font-size: 12px;
+  margin-top: 6px;
+  color: #d5d5d5;
+}
+.list-empty {
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px;
+}
+.library[role='dialog'] {
+  position: absolute;
+  left: 12px;
+  top: 60px;
+  bottom: 12px;
+  width: min(320px, calc(100% - 24px));
+  z-index: 32;
+  box-shadow: 4px 12px 30px #00000099;
+}
+#library-backdrop {
+  position: absolute;
+  inset: 0;
+  background: #0d0d0d99;
+  z-index: 31;
+}
+.empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  background: #121212;
+  text-align: center;
+}
+.big-loop {
+  font-size: 58px;
+  color: #b7b7b7;
+}
+.empty-state h2 {
+  font-size: 22px;
+}
+.empty-state button {
+  padding: 10px 20px;
+}
+.video-error {
+  position: absolute;
+  inset: 60px 18px 20px;
+  z-index: 4;
+  background: #2d2d2d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 18px;
+  text-align: center;
+  border: 1px solid #a0a0a0;
+  border-radius: 7px;
+}
+.video-error p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.fineprint {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #c9c9c9;
+}
