@@ -17,6 +17,10 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+  pre_merge_checks:
+    # This project does not document functions; the check only added noise.
+    docstrings:
+      mode: 'off'
   path_filters:
     - '!pnpm-lock.yaml'
     - '!static/media/**'
