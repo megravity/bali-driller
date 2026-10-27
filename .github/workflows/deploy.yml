@@ -13,6 +13,7 @@ on:
       - 'vite.config.ts'
       - 'tsconfig.json'
       - '.nvmrc'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 permissions:
   contents: read
